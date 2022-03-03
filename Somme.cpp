@@ -15,6 +15,7 @@ using namespace std;
 int sommeDelay(string sequence, MatriceCarree* matAdj, vector<int> clientDeliveryTime, int departureTime);
 void convertSecondToHour(int time);
 vector<Sommet> getSommits(const string& ficSommits);
+Sommet getClosestSommit(float client_x, float client_y, vector<Sommet> sommits);
 
 
 int main(){
@@ -28,6 +29,11 @@ int main(){
     cout << sommits.front() << " " << sommits.back() << "\n";
     MatriceCarree euclidian(sommits);
     euclidian.afficher(7);
+    
+    Sommet sommet("test");
+    
+    sommet = getClosestSommit(5.45912, 43.4559, sommits);
+    cout << sommet << "\n";
 
     /*
 	MatriceCarree matAdj("matAdj.txt");
@@ -114,6 +120,25 @@ vector<Sommet>  getSommits( const string& ficSommits){
 	
 	return verticesList;
 }
+
+Sommet getClosestSommit(float client_x, float client_y, vector<Sommet> sommits){
+	
+	Sommet temp("temp", client_x, client_y);
+	Sommet best("best");
+	float distance = temp.distance(sommits[0]);
+	for (int i = 1; i < sommits.size(); i++) {
+		if (temp.distance(sommits[i]) < distance ) {
+			distance = temp.distance(sommits[i]);
+			best.setX(sommits[i].getX());
+			best.setY(sommits[i].getY());
+			best.setNom(sommits[i].getNom());	
+			}
+		}
+	return best;
+}
+
+
+
 
 
 
