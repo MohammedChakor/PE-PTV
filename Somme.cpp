@@ -10,6 +10,7 @@
 
 #include "MatriceCarree.h"
 #include "Sommet.h"
+#include "Client.h"
 using namespace std;
 
 int sommeDelay(string sequence, MatriceCarree* matAdj, vector<int> clientDeliveryTime, int departureTime);
@@ -23,6 +24,13 @@ int main(){
     string sequence = "0123" ;
     //vector<string> permutations;
     
+    Client client("test");
+    //cout << client << "\n";
+    
+    client.hardWindow(9, 11);
+    client.displayTimeWindow();
+    //cout << client.getX() << " " << client.getY() <<" " << client.getHappiness() << "\n";
+    /*
     vector<Sommet> sommits;
     sommits = getSommits("noeuds.txt");
     cout << "test \n" ;
@@ -35,7 +43,6 @@ int main(){
     sommet = getClosestSommit(5.45912, 43.4559, sommits);
     cout << sommet << "\n";
 
-    /*
 	MatriceCarree matAdj("matAdj.txt");
 	matAdj.afficher(4);
  

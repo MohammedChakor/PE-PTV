@@ -20,6 +20,7 @@ public :
     void setX(float newX)              {x_coord = newX; }
     void setY(float newY)               {y_coord = newY; } 
     void setNom(string nouvNom)  { nom = nouvNom ;}	
+    
     friend ostream& operator<<(ostream& flux, const Sommet& sommet);
     bool operator==(const Sommet& sommet2) const;
     bool operator!=(const Sommet& sommet2) const;
