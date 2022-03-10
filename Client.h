@@ -5,33 +5,33 @@
 #include <string>
 using namespace std;
 
-enum HAPPINESS {CANCEL, VERYLOW, LOW, MEDIUM, HIGH, VERYHIGH }; 
-#define STEP 0.5 // time step for time window, here 30 minutes (0.5 hours)
-#define EARLIEST 8 // time for earliest deliveries, here 8AM
-#define LATEST 18 // time for latest deliveries, here 6PM
-#define NUMBEROFSTEPS (int) ((LATEST - EARLIEST)/STEP)
+
+
+#define ALPHA 1200
+#define SERVICE 600
 
 class Client
 {
 	public :
-	
-		//Client();
-		Client(const string& name, float x = 0, float y = 0, HAPPINESS happiness = VERYHIGH);
+		
+		Client(const string& name, float x = 0, float y = 0, int start, int end, int penalty = ALPHA, int service = SERVICE);
 
 		string getName() const { return clientName; }
 		float getX() const { return x_coord; }
 		float getY() const { return y_coord; }
-		HAPPINESS getHappiness() const { return clientHappiness; }
-		HAPPINESS getTimeWindowHappiness(int index ); 
+		int getPenalty() const { return penalty; }
+		int getStart() const {return start; }
+		int getEnd () const { return end; }
+		int getServiceTime() const { return serviceTime; }
+
 
 		void setName(const string& newName) { clientName = newName; }
 		void setX(float newX) { x_coord = newX; }
 		void setY(float newY) { y_coord = newY; }
-		
-		void displayTimeWindow() const;
-		
-		/* Satisfaction patrons */
-		void hardWindow(int min, int max);
+		void setStart (int newStart) { start = newStart; }
+		void setEnd (int newEnd) { end = newEnd; }
+		void setTimeService (int newTime) { serviceTime = newTime; }		
+		void penaltyFunction(int time);
 	
 		friend ostream& operator<<(ostream& flux, const Client& client);
 		bool operator==(const Client& client2) const;
@@ -40,11 +40,11 @@ class Client
 	private :
 		
 		string clientName;
+		int penalty; // 0 ou alhpa
+		int start; //wr
+		int end;	// wd
+		int serviceTime; // u sigma(h)
 		float x_coord;
 		float y_coord;
-		
-		HAPPINESS clientHappiness;	
-		
-		HAPPINESS timeWindow[NUMBEROFSTEPS]; 
 		
 };
