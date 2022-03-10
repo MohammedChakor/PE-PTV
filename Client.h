@@ -6,15 +6,16 @@
 using namespace std;
 
 
-
 #define ALPHA 1200
 #define SERVICE 600
+#define START 28800
+#define END 64800
 
 class Client
 {
 	public :
 		
-		Client(const string& name, float x = 0, float y = 0, int start, int end, int penalty = ALPHA, int service = SERVICE);
+		Client(const string& name, float x = 0, float y = 0, int start = START, int end = END, int penalty = ALPHA, int service = SERVICE); // start end service in seconds
 
 		string getName() const { return clientName; }
 		float getX() const { return x_coord; }

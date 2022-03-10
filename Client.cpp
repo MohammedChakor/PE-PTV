@@ -10,7 +10,7 @@ using namespace std;
 Client::Client(const string& name, float x, float y, int start, int end, int penalty, int service) {
 	
 	
-	clientName  = name;
+	clientName  = name; //client number
 	
 	x_coord = x;
 	y_coord = y;

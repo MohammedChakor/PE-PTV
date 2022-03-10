@@ -4,66 +4,102 @@
 #include <vector>
 #include <string>
 #include <string.h>
-#include <iterator>
-#include <algorithm>
-#include <limits>
 
 #include "MatriceCarree.h"
 #include "Sommet.h"
 #include "Client.h"
 using namespace std;
 
+#define INFINITY -1
+
 int sommeDelay(string sequence, MatriceCarree* matAdj, vector<int> clientDeliveryTime, int departureTime);
 void convertSecondToHour(int time);
 vector<Sommet> getSommits(const string& ficSommits);
 Sommet getClosestSommit(float client_x, float client_y, vector<Sommet> sommits);
 
+/* A mettre dans un Function.h*/
+int tau(vector<Client> sigma, int h, MatriceCarree matAdj);
+int function(vector<Client> sigma , int time, int h, MatriceCarree matAdj);
+int min_function(vector<Client> sigma, int time, int h, MatriceCarree matAdj);
+
 
 int main(){
+	
+	Client c0("0"); //dépot
+   	Client c1("1");
+   	Client c2("2");
+   	Client c3("3");
+   	
+   	vector<Client> sigma;
+   	
+   	sigma.push_back(c0);
+   	sigma.push_back(c2);
+   	sigma.push_back(c1);
+   	sigma.push_back(c3);
+   	
+   	MatriceCarree matAdj("matAdj.txt");
+   	
+   	cout << "Setup Done \n" ;
+   	
+   	int test;
+   	
+   	test = function(sigma, 32400, 3, matAdj);
+   	cout << test << "\n"; 		
+    
 
-    string sequence = "0123" ;
-    //vector<string> permutations;
-    
-    Client client("test");
-    //cout << client << "\n";
-    
-    client.hardWindow(9, 11);
-    client.displayTimeWindow();
-    //cout << client.getX() << " " << client.getY() <<" " << client.getHappiness() << "\n";
-    /*
-    vector<Sommet> sommits;
-    sommits = getSommits("noeuds.txt");
-    cout << "test \n" ;
-    cout << sommits.front() << " " << sommits.back() << "\n";
-    MatriceCarree euclidian(sommits);
-    euclidian.afficher(7);
-    
-    Sommet sommet("test");
-    
-    sommet = getClosestSommit(5.45912, 43.4559, sommits);
-    cout << sommet << "\n";
-
-	MatriceCarree matAdj("matAdj.txt");
-	matAdj.afficher(4);
- 
-    vector<int> clientDeliveryTime;
-  	clientDeliveryTime.push_back(0);
-  	clientDeliveryTime.push_back(36000);
-  	clientDeliveryTime.push_back(40000);
-  	clientDeliveryTime.push_back(43000);
-  
-    int departureTime = 32400;
-    convertSecondToHour(departureTime);
-    
-     
-    int delay;
-  	delay = sommeDelay(sequence, &matAdj, clientDeliveryTime, departureTime);
-    
-    cout << "Somme delay:"; convertSecondToHour(delay)  ; */
 
     return 0; 
     
     }
+    
+    
+/*A mettre dans .h */   
+int tau(vector<Client> sigma, int h, MatriceCarree matAdj) {
+	
+	if ( h < 0 || h >= sigma.size()){
+		cout << "Index Error //tau \n" ;
+		return 0;}
+	else {
+		return sigma[h].getServiceTime() + matAdj.get(stoi(sigma[h].getName()),stoi(sigma[h+1].getName())) ; 
+	}
+}
+
+int function(vector<Client> sigma , int time, int h, MatriceCarree matAdj) {
+
+	cout << "Function " << time << " " << h << "\n";
+
+	if (h == 0) {
+		if (time < 0) {
+			return INFINITY; }
+		else {
+			return 0; }
+		}
+	else {
+		cout << "Flag Function Return \n";
+		return min_function(sigma, time, h, matAdj);
+		}
+}
+
+int min_function(vector<Client> sigma, int time, int h, MatriceCarree matAdj) {
+	
+	cout << "min-function " << time << " " << h << "\n";
+	int tprim = 0;
+	sigma[h].penaltyFunction(tprim) ;
+	cout << "Flag 0 \n";
+	int min = function(sigma, tprim - tau(sigma, h, matAdj), h-1, matAdj) + sigma[h].getPenalty() ;
+	cout << "Flag 1 \n";
+	int temp = 0;
+	for (int t = 0; t<= time; t++) {
+		cout << "Flag 2 \n";
+		sigma[h-1].penaltyFunction(t) ;
+		temp = function(sigma, t - tau(sigma,h-1,matAdj), h-1, matAdj) + sigma[h-1].getPenalty() ;
+		if (temp <= min) {
+			min = temp; }
+		}
+	return min;
+}
+ 
+ /* -------------------------------------------- */
    
 int sommeDelay(string sequence, MatriceCarree* matAdj, vector<int> clientDeliveryTime, int departureTime) {
 
