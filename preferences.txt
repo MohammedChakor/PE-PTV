@@ -1,0 +1,3 @@
+1	3600	7200	much	like	sooner
+3	8000	9000	very_much	dislike		later
+2	10000	11000	much	dislike		sooner

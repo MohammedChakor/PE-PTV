@@ -5,13 +5,16 @@ MatriceCarree.o : MatriceCarree.h MatriceCarree.cpp
 Sommet.o : Sommet.h Sommet.cpp
 	g++ -c Sommet.cpp
 
-Client.o : Client.h Client.cpp
-	g++ -c Client.cpp
+Customer.o : Customer.h Customer.cpp
+	g++ -c Customer.cpp
 
-Somme.o : MatriceCarree.h Sommet.h Client.h Somme.cpp 
+Function.o : Function.h Function.cpp
+	g++ -c Function.cpp
+	
+Somme.o : MatriceCarree.h Sommet.h Customer.h Function.h Somme.cpp 
 	g++ -c Somme.cpp
 	   
-OBJ = Somme.o Sommet.o MatriceCarree.o Client.o
+OBJ = Somme.o Sommet.o MatriceCarree.o Customer.o Function.o
 Somme : $(OBJ)
 	g++ $(OBJ) -o Somme
 
