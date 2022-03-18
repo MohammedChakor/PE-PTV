@@ -8,6 +8,7 @@
 #include "MatriceCarree.h"
 #include "Sommet.h"
 #include "Customer.h"
+#include "Function.h"
 using namespace std;
 
 #define INFINITY 100000
@@ -22,17 +23,21 @@ int main(){
 	string settingsFile = "settings.txt";
 	CustomerGenerator generator(customers,preferences,10);
 	SettingsGenerator settings("settings.txt");
-	cout << settings.get(1,3) << endl;
+	//cout << settings.get(1,3) << endl;
 	
 	
-	/*	
+	
 	CustomerList test(customers);
-	cout << "Affichage: " << test << "Fin Affichage \n";
+	//cout << "Affichage: " << test << "Fin Affichage \n";
 	test.initTemplates("preferences.txt");
-	Customer c1 = test.getCustomer(2);
-	cout << c1 << "\n";
-	c1.displayTemplate();
+	test.initPenalties(settings);
 	
+	
+	Customer c1 = test.getCustomer(2);
+	//cout << c1 << "\n";
+	c1.displayTemplate();
+	c1.displayPenalty();
+	/*
 	cout <<"\n*****Test PWLF Class \n";
 	
 	Piece p1(3600,7200,-1,3);
@@ -58,10 +63,7 @@ int main(){
     
     }
     
-void settings(const string settingsFile) {
-	
 
-}
  
 
 

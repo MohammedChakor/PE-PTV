@@ -48,6 +48,40 @@ MatriceCarree::MatriceCarree(const string& ficMatrice)
         }
 }       
 
+MatriceCarree::MatriceCarree(const string& ficMatrice, const string& identifier)
+{
+    ifstream flux(ficMatrice.c_str());
+    cout << "Constructeur via fichier texte n*n\n" ;
+    int getDim = 0;
+    string temp0;    
+    while (!flux.eof()) {
+        //cout << "Flag 0 \n" ;   
+        if (getDim == 0) {   
+            flux >> temp0;
+            dimension = stoi(temp0); 
+            cout << "Dimension: " << dimension << "\n";
+            vecteur.resize(dimension);
+            for (int i = 0; i < dimension; i++){
+                vecteur[i].assign(dimension, 0);
+                } 
+            getDim = 1;
+            //cout << "Flag 1 \n" ;      
+            }
+            
+        else{
+        	for (int i = 0; i < dimension; i++){
+        		for (int j = 0; j < dimension; j++){
+        			flux >> temp0;
+        			 if (!flux.eof()) {
+                		//cout << "Flag 3 \n" ; 
+                		vecteur[i][j] = stoi(temp0);            
+                		}
+        			}   
+        		}
+			} 
+		}
+}
+  
 MatriceCarree::MatriceCarree(int dim)
 {
     dimension = dim;

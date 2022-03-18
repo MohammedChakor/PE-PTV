@@ -68,6 +68,20 @@ float Customer::travelTime(const Customer& customer1, const Customer& customer2)
 
 }
 
+void Customer::setPenaltyFunction(const SettingsGenerator& settings){
+	cout <<"SetPenalty" << endl;	
+	PenaltyFunction newFunction(customerTemplateForm, settings);
+	penaltyFunction = newFunction;
+}
+
+ostream& operator<<(ostream& flux, const CustomerList& customerList) {
+	for (int i = 0; i< customerList.getSize(); i++) {
+		flux << customerList.getCustomer(i) << "\n";
+		}
+	return flux;
+}
+
+
 /* CustomerTemplateForm */
 
 CustomerTemplateForm::CustomerTemplateForm() {
@@ -166,7 +180,7 @@ void CustomerList::initTemplates(const string& templateFile) {
 	//cout << "Flag 1\n";
 	while (!flux.eof()) {
 		flux >> customerNumber >> start >> end >> emphasis >> preference >> gradient ; /*use of intermediate strings to facilitate the understanding of the code, could have directly used temp[0] temp[1] etc */
-		cout << "Flag 2\n";
+		//cout << "Flag 2\n";
 		if (!flux.eof()) {
 			//cout << "Flag 3\n";
 			temp[0] = emphasis;
@@ -182,14 +196,16 @@ void CustomerList::initTemplates(const string& templateFile) {
 				}
 			}
 		}
+		cout << "Template init done" << endl;
 }
 
-ostream& operator<<(ostream& flux, const CustomerList& customerList) {
-	for (int i = 0; i< customerList.getSize(); i++) {
-		flux << customerList.getCustomer(i) << "\n";
-		}
-	return flux;
+void CustomerList::initPenalties(const SettingsGenerator& settings){
+	cout << "Penalties init" << endl;
+	for (int i =0; i<customerList.size(); i++) {
+		cout <<"Flag 0"<< endl;
+		customerList[i].setPenaltyFunction(settings); }
 }
+
 
 /* CustomerGenerator */
 
@@ -270,6 +286,9 @@ SettingsGenerator::SettingsGenerator() : settingsMatrix(4){ /*generates a .txt f
 
 
 SettingsGenerator::SettingsGenerator(const string& settingsFile) : settingsMatrix(settingsFile, "momolebg"){}
+
+
+
 	
 
 	
