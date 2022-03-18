@@ -49,7 +49,7 @@ class PiecewiseLinearFunction {
 		
 		void setPiece(int i, Piece& newPiece) { pieces[i] = newPiece; }
 		void insertPiece(Piece& newPiece); /*insert piece in temporal order and correct overlap */
-		void addPiece(Piece newPiece) { pieces.push_back(newPiece); } /*used in operator+ where pieces can go on top of each other*/
+		void addPiece(Piece newPiece); /*used in operator+ where pieces can go on top of each other*/
 		
 		float calculate(int time) const;
 		int getSize() const { return pieces.size(); }
@@ -72,15 +72,24 @@ class PiecewiseLinearFunction {
 		}
 			
 		int getIndexStart(int start) const{ /* returns the correct index to insert the piece in time order */
-			
-			
 		 	for (int i = 0; i < pieces.size(); i++) {
 				if (pieces[i].getStart() > start) {
 					return i;
+				}
 			}
-		}
 		return -1;	
-	}	
+		}
+		
+		void cutPieces() {
+			for (int i=0; i<pieces.size()-1; i++){
+				if (pieces[i].getEnd() > pieces[i+1].getStart()) { /* if the intervalls cross */
+					Piece newPiece(pieces[i+1].getStart(),pieces[i].getEnd(),pieces[i].getGradient() + pieces[i+1].getGradient(),pieces[i].getConstant() + pieces[i+1].getConstant());
+					pieces[i].setEnd(newPiece.getStart());
+					pieces[i+1].setStart(newPiece.getEnd());
+					auto it = pieces.insert(pieces.begin() + i +1,newPiece);
+					}
+				}
+			}						
 };
 
 
@@ -89,7 +98,7 @@ class PenaltyFunction : PiecewiseLinearFunction {
 
 	public :
 
-		//PenaltyFunction(CustomerTemplateForm& filledOutTemplateForm);
+		PenaltyFunction(const CustomerTemplateForm& filledOutTemplateForm, const SettingsGenerator& settings);
 	
 	private :
 

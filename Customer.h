@@ -8,11 +8,12 @@
 using namespace std;
 
 
-#define ALPHA 1200
-#define SERVICE 600
-#define START 28800
-#define END 64800
-#define AVERAGESPEED 20
+
+#define AVERAGESPEED 20 /* m/s */
+#define WORKDAY 36000 /*10H*/
+#define MAXDISTANCE 50000 /* Perimeter of less than sqrt(2*MAXDISTANCE²) around warehouse */
+#define MAXSERVICE 3600 /* max service duration */
+
 
 
 class CustomerTemplateForm {
@@ -31,7 +32,7 @@ class CustomerTemplateForm {
 	private :
 		int startTime;
 		int endTime;
-		vector<string> templateVector;	
+		vector<string> templateVector;	/* {"very_much||much||rather", "like||dislike", "sooner||later"}*/
 };
 
 
@@ -96,8 +97,29 @@ class CustomerList {
 					}
 				}
 				return -1;
-			}
-			
+			}			
+};
+
+class CustomerGenerator {
+
+	public :
+		CustomerGenerator(const string& customersFile, const string& preferencesFile, int numerOfCustomers);
+	
+	private :
+		const vector<string> emphasis = {"very_much","much","rather"};
+		const vector<string> preference = {"like","dislike"};
+		const vector<string> gradient = {"sooner","later"};	
+};
+
+class SettingsGenerator {
+	
+	public :
+		SettingsGenerator();
+		SettingsGenerator(const string& settingsFile);
+		int get(int i, int j) { return settingsMatrix.get(i,j); }
+	
+	private :
+		MatriceCarree settingsMatrix;
 };
 
 

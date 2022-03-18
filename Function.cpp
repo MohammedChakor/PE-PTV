@@ -80,7 +80,7 @@ bool PiecewiseLinearFunction::operator!=(const PiecewiseLinearFunction& function
 
 void PiecewiseLinearFunction::insertPiece(Piece& newPiece) {
 
-	int i = getIndexStart(newPiece.getStart());
+	int i = getIndexStart(newPiece.getStart()); /* returns the correct index to insert the piece in time order */
 	auto it = pieces.begin();
 	if (i != -1) {
 		auto it = pieces.insert(pieces.begin() + i, newPiece);
@@ -90,6 +90,21 @@ void PiecewiseLinearFunction::insertPiece(Piece& newPiece) {
 		pieces.push_back(newPiece); /*start time is bigger than all the other start times, we push it at the end */
 	}
 	correctOverlap();	
+}
+
+void PiecewiseLinearFunction::addPiece(Piece newPiece){
+
+	int i = getIndexStart(newPiece.getStart()); /* returns the correct index to insert the piece in time order */
+	auto it = pieces.begin();
+	if (i != -1) {
+		auto it = pieces.insert(pieces.begin() + i, newPiece);
+		 /* vector::insert inserts the piece before the vectorvalue given by the index */
+	}
+	else{
+		pieces.push_back(newPiece); /*start time is bigger than all the other start times, we push it at the end */
+	}
+	cutPieces();
+	
 }
 
 ostream& operator<<(ostream& flux, const PiecewiseLinearFunction& pwlf){
@@ -109,6 +124,12 @@ PiecewiseLinearFunction PiecewiseLinearFunction::operator+(const PiecewiseLinear
 		result.addPiece(function2.getPiece(i)); }
 	
 	return result;
+}
+
+/* Penalty function */
+
+PenaltyFunction::PenaltyFunction(const CustomerTemplateForm& filledOutTemplateForm, const SettingsGenerator& settings) {
+
 }
 
 
