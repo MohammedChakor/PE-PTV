@@ -21,22 +21,15 @@ int main(){
 	string customers = "customersTest.txt";
 	string preferences = "preferencesTest.txt";
 	string settingsFile = "settings.txt";
-	CustomerGenerator generator(customers,preferences,10);
+	CustomerGenerator generator(customers,preferences,5);
 	SettingsGenerator settings("settings.txt");
-	//cout << settings.get(1,3) << endl;
 	
+	CustomerList test("customersTest.txt");
+	test.initTemplates(preferences);
+	test.initPenalties(settings);	
+	cout << test << endl;
+
 	
-	
-	CustomerList test(customers);
-	//cout << "Affichage: " << test << "Fin Affichage \n";
-	test.initTemplates("preferences.txt");
-	test.initPenalties(settings);
-	
-	
-	Customer c1 = test.getCustomer(2);
-	//cout << c1 << "\n";
-	c1.displayTemplate();
-	c1.displayPenalty();
 	/*
 	cout <<"\n*****Test PWLF Class \n";
 	

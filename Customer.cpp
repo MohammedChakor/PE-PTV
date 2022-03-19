@@ -25,8 +25,11 @@ Customer::Customer(const string& name, int custNumber, float x, float y, int ser
 
 ostream& operator<<(ostream& flux, const Customer& customer)
 {
-    flux << customer.customerName <<  "\n";
-    flux << "X:" << customer.x_coord << " Y:" << customer.y_coord << "\n";
+    flux << "Name: " << customer.customerName <<  endl;
+    flux << "Customer number: " << customer.getNumber() << endl;
+    flux << "X:" << customer.x_coord << " Y:" << customer.y_coord << endl;
+    flux << customer.getTemplate() << endl;
+    flux << customer.getPenalty() << endl;
     return flux;
 }
 
@@ -129,7 +132,7 @@ ostream& operator<<(ostream& flux, const CustomerTemplateForm& ctf)
 	temp = ctf.getSize();
 	for (int i = 0; i< temp; i++) {
 	string temp = ctf.get(i);
-		flux << temp <<  "\n"; }  
+		flux << temp <<  "\t"; }  
 		
 	flux << "Start: " << ctf.getStart()<< " Endtime: " << ctf.getEnd() << "\n";
 	   
@@ -169,25 +172,37 @@ void CustomerList::initTemplates(const string& templateFile) {
 	cout << "Init Templates\n";
 
 	ifstream flux(templateFile.c_str());
-	int customerNumber;
-	int start;
-	int end;
+	string customerNumber;
+	string start;
+	string end;
 	string emphasis;
 	string preference;
 	string gradient;
+	int startint;
+	int endint;
 	vector<string> temp;
+	CustomerTemplateForm newTemplate;
 	for (int i =0; i<3; i++) { temp.push_back("");}
 	//cout << "Flag 1\n";
 	while (!flux.eof()) {
 		flux >> customerNumber >> start >> end >> emphasis >> preference >> gradient ; /*use of intermediate strings to facilitate the understanding of the code, could have directly used temp[0] temp[1] etc */
+		cout << customerNumber << "\t"<< start <<"\t"<< end <<"\t"<< emphasis <<"\t"<< preference <<"\t"<< gradient << endl ;
 		//cout << "Flag 2\n";
 		if (!flux.eof()) {
 			//cout << "Flag 3\n";
 			temp[0] = emphasis;
 			temp[1] = preference;
 			temp[2] = gradient;
-			CustomerTemplateForm newTemplate(temp, start, end);
-			int index = getIndex(customerNumber);
+			cout << "Temp: " << temp[0] <<"\t"<< temp[1] <<"\t"<< temp[2] << endl;
+			startint = stoi(start);
+			endint = stoi(end);			
+			cout << startint <<"\t"<< endint << endl;
+			newTemplate.setVector(temp);
+			newTemplate.setStart(startint);
+			newTemplate.setEnd(endint);
+			
+			int index = getIndex(stoi(customerNumber));
+			
 			//cout << "Flag 4\n";
 			if (index != -1) {
 				//cout << "Flag 5\n";
@@ -202,7 +217,7 @@ void CustomerList::initTemplates(const string& templateFile) {
 void CustomerList::initPenalties(const SettingsGenerator& settings){
 	cout << "Penalties init" << endl;
 	for (int i =0; i<customerList.size(); i++) {
-		cout <<"Flag 0"<< endl;
+		//cout <<"Flag 0"<< endl;
 		customerList[i].setPenaltyFunction(settings); }
 }
 

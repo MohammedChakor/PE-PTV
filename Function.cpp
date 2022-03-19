@@ -131,64 +131,69 @@ PiecewiseLinearFunction PiecewiseLinearFunction::operator+(const PiecewiseLinear
 /* Penalty function */
 
 PenaltyFunction::PenaltyFunction(const CustomerTemplateForm& filledOutTemplateForm, const SettingsGenerator& settings) {
-	cout <<"Flag1"<<endl;
+	//cout <<"Penalty Function"<<endl;
 	int emphasis; /* {"very_much||much||rather", "like||dislike", "sooner||later"}*/
 	int gradient;
+	//cout << "verif tempalte vector: "<< filledOutTemplateForm.get(0) << "\t" << filledOutTemplateForm.get(1) << "\t" << filledOutTemplateForm.get(2) << endl;
 	if (filledOutTemplateForm.get(0)=="very_much"){
-			cout <<"verymuch"<< endl;		
+			//cout <<"verymuch"<< endl;		
 			if (filledOutTemplateForm.get(1) == "like") {
-				cout << "like" << endl;
+				//cout << "like" << endl;
 				emphasis = settings.get(0,0); 
 				}
 			else{
-				cout << "dislike" << endl;
-				emphasis = settings.get(0,1); 
+				//cout << "dislike" << endl;
+				emphasis = settings.get(1,0); 
 				}
 				
 			if (filledOutTemplateForm.get(1) == "like" && filledOutTemplateForm.get(2) == "sooner" || filledOutTemplateForm.get(1) == "dislike" && filledOutTemplateForm.get(2) == "later") {
-				cout << "likesooner" << endl;
-				gradient = settings.get(0,2); 
+				//cout << "likesooner" << endl;
+				gradient = settings.get(2,0); 
 				}
 			else{
-				cout << "likelater" << endl;
-				gradient = settings.get(0,3); 
+				//cout << "likelater" << endl;
+				gradient = settings.get(3,0); 
 				}
 	}
 			
 	else if (filledOutTemplateForm.get(0)=="much") {
-			cout << "much" << endl;
+			//cout << "much" << endl;
 			if (filledOutTemplateForm.get(1) == "like") {
-				cout << "like" << endl;
-					emphasis = settings.get(1,0); 
+				//cout << "like" << endl;
+					emphasis = settings.get(0,1); 
 					}
 			else{
-					cout << "dislike" << endl;
+					//cout << "dislike" << endl;
 					emphasis = settings.get(1,1); 
 					}
 			if (filledOutTemplateForm.get(1) == "like" && filledOutTemplateForm.get(2) == "sooner" || filledOutTemplateForm.get(1) == "dislike" && filledOutTemplateForm.get(2) == "later") {
-					cout << "likesooner" << endl;
-					gradient = settings.get(1,2); 
+					//cout << "likesooner" << endl;
+					gradient = settings.get(2,1); 
 					}
 			else{
-					cout << "likelater" << endl;
-					gradient = settings.get(1,3); 
+					//cout << "likelater" << endl;
+					gradient = settings.get(3,1); 
 					}
 	}
-	else	{
-			cout << "rather" << endl;	
+	else if (filledOutTemplateForm.get(0)=="rather")	{
+			//cout << "rather" << endl;	
 			if (filledOutTemplateForm.get(1) == "like") {
-				emphasis = settings.get(2,0); 
+				emphasis = settings.get(0,2); 
 				}
 			else{
-				emphasis = settings.get(2,1); 
+				emphasis = settings.get(1,2); 
 				}
 			if (filledOutTemplateForm.get(1) == "like" && filledOutTemplateForm.get(2) == "sooner" || filledOutTemplateForm.get(1) == "dislike" && filledOutTemplateForm.get(2) == "later") {
 				gradient = settings.get(2,2); 
 				}
 			else{
-				gradient = settings.get(2,3); 
+				gradient = settings.get(3,2); 
 				}
 	}
+	else {
+		cout << "Template error" << endl;
+
+			}
 			Piece newPiece(filledOutTemplateForm.getStart(), filledOutTemplateForm.getEnd(),gradient,emphasis);
 			PiecewiseLinearFunction::insertPiece(newPiece);
 

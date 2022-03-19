@@ -24,6 +24,10 @@ class CustomerTemplateForm {
 		int getStart() const {return startTime; }
 		int getEnd () const { return endTime; }
 		
+		void setStart(int newStart) {startTime = newStart;}
+		void setEnd(int newEnd) { endTime = newEnd; }
+		void setVector(const vector<string>& newVector) { templateVector = newVector; }
+		
 		friend ostream& operator<<(ostream& flux, const CustomerTemplateForm& ctf);
 		
 	private :
@@ -149,6 +153,8 @@ class Customer
 		float getX() const { return x_coord; }
 		float getY() const { return y_coord; }
 		int getNumber() const {return customerNumber; }
+		CustomerTemplateForm getTemplate() const { return customerTemplateForm; }
+		PenaltyFunction getPenalty() const { return penaltyFunction; }
 		
 		float getDistance(const Customer& customer2) const ;
 		float distance(const Customer& customer1, const Customer& customer2) const;
