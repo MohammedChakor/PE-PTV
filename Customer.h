@@ -70,6 +70,7 @@ class Piece {
 		float getMinimum() const;
 		
 		float calculate(int time) const;
+		float calculateEnd() const { return gradient*endTime + constant; }
 		
 		friend ostream& operator<<(ostream& flux, const Piece& piece);
 		bool operator==(const Piece& piece2);
@@ -88,12 +89,15 @@ class Piece {
 class PiecewiseLinearFunction {
 	public :
 		PiecewiseLinearFunction() {}
+		PiecewiseLinearFunction(const vector<Piece>& newPieces) { pieces = newPieces; }
 		
 		Piece getPiece(int i) const { return pieces[i] ; }
 		
 		void setPiece(int i, Piece& newPiece) { pieces[i] = newPiece; }
+		void setStartPiece(int i, int newStart) { pieces[i].setStart(newStart); }
+		void setEndPiece(int i, int newEnd) { pieces[i].setEnd(newEnd); }
 		void insertPiece(Piece& newPiece); /* insert piece in temporal order and correct overlap */
-		void addPiece(Piece newPiece); /* used in operator+ where pieces can go on top of each other*/
+		void addPiece(Piece newPiece);/* used in operator+ where pieces can go on top of each other*/
 		
 		float calculate(int time) const;
 		int getSize() const { return pieces.size(); }

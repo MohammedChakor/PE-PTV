@@ -96,202 +96,9 @@ void PiecewiseLinearFunction::insertPiece(Piece& newPiece) {
 	correctOverlap();	
 }
 
-/*
-void PiecewiseLinearFunction::addPiece(Piece newPiece){
-
-	int i = getIndexStart(newPiece.getStart()); /* returns the correct index to insert the piece in time order */
-	/*auto it = pieces.begin();
-	if (i != -1) {
-		auto it = pieces.insert(pieces.begin() + i, newPiece);
-		 /* vector::insert inserts the piece before the vectorvalue given by the index */
-	/*}
-	else{
-		pieces.push_back(newPiece); /*start time is bigger than all the other start times, we push it at the end */
-	/*}
-	cutPieces();
-	
-}*/
-
 void PiecewiseLinearFunction::addPiece(Piece newPiece) {
 
-	cout << "\n******AddPiece()************" << endl;
-		int newStart = newPiece.getStart();
-		int newEnd = newPiece.getEnd();
-		float newGrad = newPiece.getGradient();
-		float newConst = newPiece.getConstant();
-		
-	if (pieces.size() == 0) {
-		cout <<"Flag 0" << endl;
-		cout << newStart <<"\t"<<newEnd<<"\t"<<newGrad<<"\t"<<newConst << endl;	
-		pieces.push_back(newPiece);
-	}
-	else {
-		cout <<"Flag 1" << endl	;	
-		cout << newStart <<"\t"<<newEnd<<"\t"<<newGrad<<"\t"<<newConst << endl;
-		/**/
-		cout << " Affichage Pieces" << endl;
-		cout << pieces[0].getStart() << "\t";
-		for (int i = 0; i < pieces.size(); i++) {
-			cout << pieces[i].getEnd() << "\t";
-			}
-		/**/
-		
-		/*If piece is outside the current funcction */
-		if (newEnd < pieces[0].getStart()) {
-			cout <<"Flag 2" << endl;
-			Piece newPiece0(newEnd,pieces[0].getStart(),0,0,0);
-			auto it = pieces.insert(pieces.begin(), newPiece0);
-			it = pieces.insert(pieces.begin(), newPiece);			
-		}		
-		else if (newStart > pieces[pieces.size()-1].getEnd())
-		{
-			cout <<"Flag 3" << endl;
-			Piece newPiece0(pieces[pieces.size()-1].getEnd(),newStart ,0,0,0);
-			pieces.push_back(newPiece0);
-			pieces.push_back(newPiece);	
-		}
-		/**/
-		else { /*New piece crosses other pieces */
-			cout <<"General cross" << endl;
-			vector<Piece> copy = pieces;
-			int indexStart = 0;
-			int indexEnd = 1;
-			vector<int> points;
-			points.push_back(pieces[0].getStart());
-						
-			/*points*/
-			if (pieces.size() > 1) {
-				cout << "newStart" << newPiece.getStart() << endl;
-				//p0
-				if (newPiece.getStart() < pieces[0].getEnd() && newPiece.getStart() > pieces[0].getStart()) {
-						cout <<"Flag 6" << endl;
-						points.push_back(newPiece.getStart()); 
-						indexStart = points.size() - 1;
-						}
-				if (newPiece.getEnd() < pieces[0].getEnd() && newPiece.getEnd() > pieces[0].getStart()) {
-						cout <<"Flag 7" << endl;
-						points.push_back(newPiece.getEnd()); 
-						indexEnd = points.size() - 1;
-						}
-				points.push_back(pieces[0].getEnd());				
-				
-				for (int i = 0; i<pieces.size() -1; i++) { /* ok loop */
-					cout <<"Flag 5" << endl;
-					
-					if (newPiece.getStart() < pieces[i+1].getEnd() && newPiece.getStart() > pieces[i].getEnd()) {
-						cout <<"Flag 6" << endl;
-						points.push_back(newPiece.getStart()); 
-						indexStart = points.size() - 1;
-						points.push_back(pieces[i+1].getEnd());
-						}
-					if (newPiece.getEnd() < pieces[i+1].getEnd() && newPiece.getEnd() > pieces[i].getEnd()) {
-						cout <<"Flag 7" << endl;
-						points.push_back(newPiece.getEnd()); 
-						indexEnd = points.size() - 1;
-						points.push_back(pieces[i+1].getEnd());
-						}
-					if (i == pieces.size() - 2 && newPiece.getEnd() > pieces[i+1].getEnd()) {
-						points.push_back(pieces[i+1].getEnd());
-						points.push_back(newPiece.getEnd()); 
-						}
-											 
-					cout <<"Flag 8" << endl;
-					
-				}
-				
-			}
-			else {
-				points.push_back(pieces[0].getEnd());
-				if (newPiece.getStart() < pieces[0].getEnd() && newPiece.getStart() > pieces[0].getStart()) {
-						cout <<"Flag 6" << endl;
-						int temp = points[points.size()-1];
-						cout << "temp: " << temp << endl;
-						cout << points[points.size()-1];	
-						points[points.size()-1] = newPiece.getStart();	
-						cout << points[points.size()-1]	;				
-						points.push_back(temp); 
-						indexStart = 1;					
-						}
-				
-						
-				if (newPiece.getEnd() < pieces[0].getEnd() && newPiece.getEnd() > pieces[0].getStart()) {
-						cout <<"Flag 6" << endl;
-						int temp = points[points.size()-1];
-						cout << "temp: " << temp << endl;
-						cout << points[points.size()-1];	
-						points[points.size()-1] = newPiece.getEnd();	
-						cout << points[points.size()-1]	;				
-						points.push_back(temp); 
-						indexEnd = 2;
-						}
-					cout <<"Flag 8" << endl;
-	
-			}
-			
-			
-
-			/*points*/
-			
-			/*pieces update*/		
-			cout <<"Flag 9" << endl; 
-			cout << "POINTS \t";
-			for (int i = 0; i < points.size(); i++) {
-				cout << points[i] << "\t"; 
-				}
-			int numberOfPieces = points.size() - 1;	
-			cout << numberOfPieces << endl;
-			cout << pieces.size() << endl;
-					
-			if ( pieces.size() != numberOfPieces ) {
-				int test = numberOfPieces - pieces.size();
-				cout << "difference of pieces: " << test << endl;
-				cout <<"Flag 10" << endl;
-				for (int i = 0; i < test; i++) {
-					//cout << "test" << i << endl;
-					Piece temp(0,0,0,0,0);
-					pieces.push_back(temp);
-				}
-				cout << pieces.size() << endl;
-			}
-			cout <<"Flag 11" << endl;
-			cout << "number of pieces: "<< numberOfPieces <<"\t"<< pieces.size() << endl ;		
-			for (int i = 0; i < points.size(); i++ ) { cout << points[i] << endl; }	
-			for (int i = 0; i < pieces.size(); i++) {
-				pieces[i].setStart(points[i]);
-				pieces[i].setEnd(points[i+1]);
-				cout << "pieces[i]: " <<"\t"<< pieces[i].getStart() <<"\t"<< pieces[i].getEnd() << endl;
-				}
-				
-			cout << "Pieces update" << endl;
-			cout << indexStart << "\t" << indexEnd << endl;
-			for (int i = 0; i < indexStart; i++ ) {
-				//cout << "*1" << endl;
-				pieces[i].setGradient(copy[i].getGradient());
-				pieces[i].setConstant(copy[i].getConstant());
-				pieces[i].setConstPenalty(copy[i].getConstPenalty());
-			}
-			int offSet = pieces.size() - copy.size();
-			cout << "offSet" << offSet << endl;
-			cout << "copy : " << copy[copy.size() -1] << endl;
-			cout << "Start/end" <<"\t"<<indexStart << "\t" << indexEnd << endl;
-			for (int i = indexEnd; i < pieces.size(); i++) {
-				cout << "*2" << endl;
-				pieces[i].setGradient(copy[i-offSet].getGradient());
-				pieces[i].setConstant(copy[i-offSet].getConstant());
-				pieces[i].setConstPenalty(copy[i-offSet].getConstPenalty());
-			}
-			
-			for ( int i = indexStart; i < indexEnd; i++ ) {
-				cout << "*3" << endl;
-				pieces[i].setGradient(copy[i - offSet + 1].getGradient() + newPiece.getGradient());
-				pieces[i].setConstant(copy[i - offSet + 1].getConstant() + newPiece.getConstant());
-				pieces[i].setConstPenalty(copy[i - offSet + 1].getConstPenalty() + newPiece.getConstPenalty());				
-			}
-			
-			cout <<"Flag 12" << endl;
-			}
-		}	
-}
+}	
 
 ostream& operator<<(ostream& flux, const PiecewiseLinearFunction& pwlf){
 
@@ -303,12 +110,42 @@ ostream& operator<<(ostream& flux, const PiecewiseLinearFunction& pwlf){
 
 PiecewiseLinearFunction PiecewiseLinearFunction::operator+(const PiecewiseLinearFunction& function2) const {
 	
-	PiecewiseLinearFunction result;
-	for (int i = 0; i<pieces.size(); i++) {
-		result.addPiece(pieces[i]); }
-	for (int i = 0; i<function2.getSize(); i++) {
-		result.addPiece(function2.getPiece(i)); }
-	return result;	
+	vector<Piece> somme;
+	int i = 0;
+	int j= 0;
+	int stop = 0;
+	Piece newPiece;
+	while ( stop == 0) {	
+		if (pieces[i].getEnd() < function2.getPiece(j).getEnd() && i < pieces.size()){
+			newPiece.setStart(pieces[i].getStart());
+			newPiece.setEnd(pieces[i].getEnd());
+			newPiece.setGradient(pieces[i].getGradient() + function2.getPiece(j).getGradient());
+			newPiece.setConstant(pieces[i].getConstant() + function2.getPiece(j).getConstant());
+			somme.push_back(newPiece);
+			i++;
+			}
+		else if (function2.getPiece(j).getEnd() < pieces[i].getEnd()  && j < function2.getSize()) {
+			newPiece.setStart(function2.getPiece(j).getStart());
+			newPiece.setEnd(function2.getPiece(j).getEnd());
+			newPiece.setGradient(pieces[i].getGradient() + function2.getPiece(j).getGradient());
+			newPiece.setConstant(pieces[i].getConstant() + function2.getPiece(j).getConstant());
+			somme.push_back(newPiece);
+			j++;		
+		}
+		else {
+			newPiece.setStart(somme[somme.size() - 1].getEnd());
+			newPiece.setEnd(INFINITY);
+			newPiece.setGradient(pieces[i].getGradient() + function2.getPiece(j).getGradient());
+			newPiece.setConstant(pieces[i].getConstant() + function2.getPiece(j).getConstant());
+			somme.push_back(newPiece);
+			for (int i = 1; i < somme.size(); i++) {
+				somme[i].setStart(somme[i-1].getEnd());
+				}			
+			stop = 1;			
+		}
+	}	
+	PiecewiseLinearFunction result(somme);
+	return result;
 }
 
 PiecewiseLinearFunction PiecewiseLinearFunction::min() const {
@@ -316,36 +153,43 @@ PiecewiseLinearFunction PiecewiseLinearFunction::min() const {
 	/* Find each pieces' minimum and reset the pieces' parameter to a constant function = to the minimum */
 
 	PiecewiseLinearFunction newFunction;
-	Piece piece;
-	piece.setGradient(0);
-	piece.setConstPenalty(pieces[0].getConstPenalty());
+	Piece temp;
+	cout << "Min" << endl;
+	float min = pieces[0].calculate(pieces[0].getStart());
+
 	
-	for (int i = 0; i < pieces.size(); i++) {
-		piece.setStart(pieces[i].getStart());
-		piece.setEnd(pieces[i].getEnd());
-		piece.setConstant(pieces[i].getMinimum());
-		
-		if ( i > 0 &&  piece.getConstant() > newFunction.getPiece(i-1).getConstant()) {
-			piece.setConstant(newFunction.getPiece(i-1).getConstant());
+	for (int i = 0; i < pieces.size(); i++ ) {	
+		if (pieces[i].calculateEnd() < min && pieces[i].calculate(pieces[i].getStart()) > min) {
+			int newPoint = (int) (min - pieces[i].getConstant())/pieces[i].getGradient();
+			newFunction.setEndPiece(i-1, newPoint);
+			temp = pieces[i];
+			temp.setStart(newPoint);
+			newFunction.insertPiece(temp);
+			min = pieces[i].calculateEnd();
+		}
+		else if (pieces[i].calculateEnd() <= min) { /* keep the piece */
+			temp = pieces[i];
+			newFunction.insertPiece(temp);
+			min = pieces[i].calculateEnd();
+		}
+		else {
+			temp = pieces[i];
+			temp.setGradient(0);
+			temp.setConstant(min);
+			newFunction.insertPiece(temp);
 			}
-		newFunction.addPiece(piece);
+		cout << min << endl;
 		}
 	return newFunction;
-	
 }
 
 PiecewiseLinearFunction PiecewiseLinearFunction::offSet(int offSet) const { 
-
-	PiecewiseLinearFunction newFunction;
-	Piece piece;
-	piece.setConstPenalty(pieces[0].getConstPenalty());
-
+	cout << "Offset" << endl;
+	PiecewiseLinearFunction newFunction = *this;
+	cout << newFunction << endl; 
 	for (int i = 0; i < pieces.size(); i++) {
-		piece.setStart(pieces[i].getStart() + offSet);
-		piece.setEnd(pieces[i].getEnd() + offSet);
-		piece.setGradient(pieces[i].getGradient());
-		piece.setConstant(pieces[i].getConstant());
-		newFunction.addPiece(piece);
+		newFunction.setStartPiece(i, pieces[i].getStart() + offSet);
+		newFunction.setEndPiece(i, pieces[i].getEnd() + offSet);
 		}
 	return newFunction;			
 }
@@ -417,9 +261,12 @@ PenaltyFunction::PenaltyFunction(const CustomerTemplateForm& filledOutTemplateFo
 		cout << "Template error" << endl;
 
 			}
+			Piece minusInfinity(-INFINITY,filledOutTemplateForm.getStart(),0,settings.get(0,3),settings.get(0,3));
+			PiecewiseLinearFunction::insertPiece(minusInfinity);
 			Piece newPiece(filledOutTemplateForm.getStart(), filledOutTemplateForm.getEnd(),gradient,emphasis, settings.get(0,3));
 			PiecewiseLinearFunction::insertPiece(newPiece);
-
+			Piece plusInfinity(filledOutTemplateForm.getEnd(),INFINITY,0,settings.get(0,3),settings.get(0,3));
+			PiecewiseLinearFunction::insertPiece(plusInfinity);
 }
 
 /* Class Tour */
@@ -434,11 +281,13 @@ Tour::Tour() {
 PiecewiseLinearFunction Tour::propagatedFunction(int h) const {
 
 	/* f0 definition */
+	cout << "fO def : " << endl;
 	PiecewiseLinearFunction f0;
 	Piece minusInfinity(-INFINITY,0,0,INFINITY,0);
 	Piece plusInfinity(0,INFINITY,0,0,0);
-	f0.addPiece(minusInfinity);
-	f0.addPiece(plusInfinity);
+	f0.insertPiece(minusInfinity);
+	f0.insertPiece(plusInfinity);
+	cout << "End of fO def  " << f0 << endl;
 	
 	if (h == 0) {
 		return f0; }
