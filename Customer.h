@@ -11,6 +11,7 @@ using namespace std;
 #define WORKDAY 36000 /*10H*/
 #define MAXDISTANCE 50000 /* Perimeter of less than sqrt(2*MAXDISTANCE²) around warehouse */
 #define MAXSERVICE 3600 /* max service duration */
+#define INFINITY 100000
 
 
 class CustomerTemplateForm {
@@ -53,17 +54,19 @@ class SettingsGenerator {
 class Piece {
 
 	public :
-		Piece();
-		Piece(int start, int end, float new_gradient, float new_constant); // [start; end[  
+		Piece() {}
+		Piece(int start, int end, float new_gradient, float new_constant, float constPenalty); // [start; end[  
 		void setStart(int newStart) { startTime = newStart; }
 		void setEnd (int newEnd ) { endTime = newEnd; }
 		void setGradient (float newGrad ) { gradient = newGrad; }
 		void setConstant (float newConst) {constant = newConst; }
+		void setConstPenalty (float newConst) { constantPenalty = newConst ; }
 		
 		int getStart() const { return startTime; }
 		int getEnd() const { return endTime; }
 		float getGradient() const { return gradient; }
 		float getConstant() const { return constant; }
+		float getConstPenalty() const { return constantPenalty; }
 		float getMinimum() const;
 		
 		float calculate(int time) const;
@@ -77,6 +80,7 @@ class Piece {
 		int endTime;
 		float gradient;
 		float constant;
+		float constantPenalty; /* value outside interval */
 };
 
 /*Class PiecewiseLinear Function */
@@ -88,11 +92,14 @@ class PiecewiseLinearFunction {
 		Piece getPiece(int i) const { return pieces[i] ; }
 		
 		void setPiece(int i, Piece& newPiece) { pieces[i] = newPiece; }
-		void insertPiece(Piece& newPiece); /*insert piece in temporal order and correct overlap */
-		void addPiece(Piece newPiece); /*used in operator+ where pieces can go on top of each other*/
+		void insertPiece(Piece& newPiece); /* insert piece in temporal order and correct overlap */
+		void addPiece(Piece newPiece); /* used in operator+ where pieces can go on top of each other*/
 		
 		float calculate(int time) const;
 		int getSize() const { return pieces.size(); }
+		
+		PiecewiseLinearFunction min() const; 
+		PiecewiseLinearFunction offSet(int offSet) const; /* returns  f -> f(t-offSet)  pwlf <=> right offset of the function */
 		
 		friend ostream& operator<<(ostream& flux, const PiecewiseLinearFunction& pwlf);
 		bool operator==(const PiecewiseLinearFunction& function2);
@@ -120,16 +127,27 @@ class PiecewiseLinearFunction {
 		return -1;	
 		}
 		
-		void cutPieces() {
+		void cutPieces() { 
+			int newIndex;
 			for (int i=0; i<pieces.size()-1; i++){
-				if (pieces[i].getEnd() > pieces[i+1].getStart()) { /* if the intervalls cross */
-					Piece newPiece(pieces[i+1].getStart(),pieces[i].getEnd(),pieces[i].getGradient() + pieces[i+1].getGradient(),pieces[i].getConstant() + pieces[i+1].getConstant());
+				if (pieces[i].getEnd() > pieces[i+1].getStart() && pieces[i+1].getEnd() > pieces[i].getEnd()) { /* if the intervalls cross */
+					Piece newPiece(pieces[i+1].getStart(),pieces[i].getEnd(),pieces[i].getGradient() + pieces[i+1].getGradient(),pieces[i].getConstant() + pieces[i+1].getConstant(), pieces[i+1].getConstPenalty());
 					pieces[i].setEnd(newPiece.getStart());
 					pieces[i+1].setStart(newPiece.getEnd());
-					auto it = pieces.insert(pieces.begin() + i +1,newPiece);
+					newIndex = getIndexStart(newPiece.getStart());
+					auto it = pieces.insert(pieces.begin() + newIndex,newPiece);
 					}
+					
+				 if ( pieces[i].getEnd() > pieces[i+1].getStart() && pieces[i+1].getEnd() < pieces[i].getEnd()) {
+				 	Piece newPiece(pieces[i+1].getEnd(),pieces[i].getEnd(),pieces[i].getGradient(), pieces[i].getConstant(), pieces[i].getConstPenalty());
+				 	pieces[i+1].setGradient(pieces[i].getGradient() + pieces[i+1].getGradient());
+				 	pieces[i+1].setConstant(pieces[i].getConstant() + pieces[i+1].getConstant());
+				 	newIndex = getIndexStart(newPiece.getStart());
+				 	auto it = pieces.insert(pieces.begin() + newIndex,newPiece); 		 			 
+				 	
 				}
-			}						
+			} 
+		}						
 };
 
 
@@ -153,6 +171,7 @@ class Customer
 		float getX() const { return x_coord; }
 		float getY() const { return y_coord; }
 		int getNumber() const {return customerNumber; }
+		int getServiceTime() const { return serviceTime; }
 		CustomerTemplateForm getTemplate() const { return customerTemplateForm; }
 		PenaltyFunction getPenalty() const { return penaltyFunction; }
 		
@@ -160,6 +179,7 @@ class Customer
 		float distance(const Customer& customer1, const Customer& customer2) const;
 		float getTravelTime(const Customer& customer2) const ;
 		float travelTime(const Customer& customer1, const Customer& customer2) const;
+		
 		
 		void setName(const string& newName) { customerName = newName; }
 		void setX(float newX) { x_coord = newX; }
@@ -191,12 +211,13 @@ class Customer
 class CustomerList {
 	
 	public:
-	
+		CustomerList() {}
 		CustomerList(const string& customersFile);
 		void initTemplates(const string& templateFile);
 		void initPenalties(const SettingsGenerator& settings); 
 		int getSize() const { return customerList.size(); }
 		Customer getCustomer(int i) const {return customerList[i]; }
+		void addCustomer(const Customer& newCust) { customerList.push_back(newCust); }
 		friend ostream& operator<<(ostream& flux, const CustomerList& customerList);
 		
 		
@@ -225,6 +246,18 @@ class CustomerGenerator {
 		const vector<string> gradient = {"sooner","later"};	
 };
 
+class Tour : public CustomerList {
+	
+	public :
+	
+		Tour();
+		PiecewiseLinearFunction propagatedFunction(int h) const; //défintion de tau(h) à revoir
+	
+	private :
+	
+
+
+};
 
 
 
