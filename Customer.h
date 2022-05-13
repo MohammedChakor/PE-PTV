@@ -68,6 +68,7 @@ class Piece {
 		float getConstant() const { return constant; }
 		float getConstPenalty() const { return constantPenalty; }
 		float getMinimum() const;
+		int argMin() const;
 		
 		float calculate(int time) const;
 		float calculateEnd() const { return gradient*endTime + constant; }
@@ -101,6 +102,7 @@ class PiecewiseLinearFunction {
 		
 		float calculate(int time) const;
 		int getSize() const { return pieces.size(); }
+		int argMin() const;
 		
 		PiecewiseLinearFunction min() const; 
 		PiecewiseLinearFunction offSet(int offSet) const; /* returns  f -> f(t-offSet)  pwlf <=> right offset of the function */
@@ -221,7 +223,11 @@ class CustomerList {
 		void initPenalties(const SettingsGenerator& settings); 
 		int getSize() const { return customerList.size(); }
 		Customer getCustomer(int i) const {return customerList[i]; }
+		void setCustomer(int i, const Customer& newCustomer) { customerList[i] = newCustomer; }
 		void addCustomer(const Customer& newCust) { customerList.push_back(newCust); }
+		void addCustomerStart( const Customer& newCust) { customerList.insert(customerList.begin(), newCust); }
+		void removeCustomerStart() { customerList.erase(customerList.begin()) ; }
+		void removeCustomerEnd() {customerList.pop_back() ; }
 		friend ostream& operator<<(ostream& flux, const CustomerList& customerList);
 		
 		
@@ -255,14 +261,28 @@ class Tour : public CustomerList {
 	public :
 	
 		Tour();
+		Tour(const CustomerList& customers);
+		void switchCustomers(int i, int j, int k);
+				
+		void addWarehouse();
+		void removeWarehouse();
 		PiecewiseLinearFunction propagatedFunction(int h) const; //défintion de tau(h) à revoir
+		PiecewiseLinearFunction ibarakiFunction(int h);
 	
 	private :
-	
-
 
 };
 
+class TSP {
+
+	public :
+		TSP(const CustomerList& customers);
+		
+	private :
+	
+		Tour tour;
+
+};
 
 
 

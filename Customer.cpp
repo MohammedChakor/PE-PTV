@@ -27,9 +27,9 @@ ostream& operator<<(ostream& flux, const Customer& customer)
 {
     flux << "Name: " << customer.customerName <<  endl;
     flux << "Customer number: " << customer.getNumber() << endl;
-    flux << "X:" << customer.x_coord << " Y:" << customer.y_coord << endl;
+    /*flux << "X:" << customer.x_coord << " Y:" << customer.y_coord << endl;
     flux << customer.getTemplate() << endl;
-    flux << customer.getPenalty() << endl;
+    flux << customer.getPenalty() << endl;*/
     return flux;
 }
 

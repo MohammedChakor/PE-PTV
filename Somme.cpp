@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "MatriceCarree.h"
-#include "Sommet.h"
+//#include "Sommet.h"
 #include "Customer.h"
 #include "Function.h"
 using namespace std;
@@ -22,62 +22,31 @@ int main(){
 	string customers = "customersTest.txt";
 	string preferences = "preferencesTest.txt";
 	string settingsFile = "settings.txt";
-	//CustomerGenerator generator(customers,preferences,5);
+	//CustomerGenerator generator(customers,preferences,15);
 	SettingsGenerator settings(settingsFile);
 	
 	CustomerList test(customers);
 	test.initTemplates(preferences);
 	test.initPenalties(settings);	
-	//cout << test << endl;
-	
-	/*
-	cout << "Test min et offSet" << endl;
-	Customer c1 = test.getCustomer(1);
-	PenaltyFunction testf = c1.getPenalty();
-	cout << testf << endl;
-	cout << "min" << endl;
-	cout << testf.min() << endl;
-	cout << "test offset"<< endl;
-	cout << testf.offSet(10) << endl;*/
-	
-	cout <<"Tour test" << endl;
-	Tour tour;
-	tour.addCustomer(test.getCustomer(0));
-	tour.addCustomer(test.getCustomer(3));
-	//tour.addCustomer(test.getCustomer(1));
-	//tour.addCustomer(test.getCustomer(2));
-	
-	PiecewiseLinearFunction fh;
-	fh = tour.propagatedFunction(2);
-	cout << "F3: " << endl;
-	cout << fh << endl;
-	
-	//sumTest();
-	
 
+	cout <<"Tour test" << endl;
+	Tour tour3(test);
+	cout << tour3 << endl;
+
+	PiecewiseLinearFunction fh3;
+	fh3 = tour3.ibarakiFunction(15);
+	cout << "Random sequence \n " << fh3 << endl;	
+	cout << "Argmin " << fh3.argMin() << endl;
 	
-	/*
-	cout <<"\n*****Test PWLF Class \n";
-	
-	Piece p1(3600,7200,-1,3);
-	Piece p2(10000, 11000,3,4);
-	Piece p3(7000, 11500, 7, -2);
-	
-	cout<<"Test of pwlf::insertPiece() method \n\n";
-	PiecewiseLinearFunction test_function;
-	test_function.insertPiece(p1);
-	test_function.insertPiece(p3);
-	test_function.insertPiece(p2);
-	cout << test_function << "\n";
-	
-	cout << "Test of pwlf::addPiece() method \n";
-	PiecewiseLinearFunction test2;
-	test2.addPiece(p1);
-	test2.addPiece(p3);
-	test2.addPiece(p2);
-	cout << test2 << "\n";*/
-	
+	tour3.switchCustomers(1,14,2);
+	cout << "Switch: "<< endl;
+	cout << tour3 << endl;
     
+    PiecewiseLinearFunction fh4;
+	fh4 = tour3.ibarakiFunction(15);
+	cout << "AfterSWitch \n " << fh4 << endl;	
+	cout << "Argmin " << fh4.argMin() << endl;
+	
     return 0; 
     
     }

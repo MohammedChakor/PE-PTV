@@ -33,6 +33,11 @@ float Piece::getMinimum() const {
 	if (gradient >= 0) {return gradient*startTime + constant; }
 	else { return gradient*(endTime-1) + constant; } // [start; end[  
 }
+
+int Piece::argMin() const {
+	if (gradient >= 0) {return startTime; }
+	else { return endTime; }
+}
 	
 bool Piece::operator==(const Piece& piece2) {
 	return (startTime == piece2.getStart() && endTime == piece2.getEnd() \
@@ -154,23 +159,33 @@ PiecewiseLinearFunction PiecewiseLinearFunction::min() const {
 
 	PiecewiseLinearFunction newFunction;
 	Piece temp;
-	cout << "Min" << endl;
+	//cout << "Min" << endl;
 	float min = pieces[0].calculate(pieces[0].getStart());
 
 	
-	for (int i = 0; i < pieces.size(); i++ ) {	
-		if (pieces[i].calculateEnd() < min && pieces[i].calculate(pieces[i].getStart()) > min) {
+	for (int i = 0; i < pieces.size()-1; i++ ) {	
+		if (pieces[i].calculateEnd() < min && pieces[i].calculate(pieces[i].getStart()) > min) { /*ok*/
 			int newPoint = (int) (min - pieces[i].getConstant())/pieces[i].getGradient();
 			newFunction.setEndPiece(i-1, newPoint);
 			temp = pieces[i];
+			//cout << "temp: " << temp << endl;
 			temp.setStart(newPoint);
 			newFunction.insertPiece(temp);
 			min = pieces[i].calculateEnd();
 		}
-		else if (pieces[i].calculateEnd() <= min) { /* keep the piece */
-			temp = pieces[i];
-			newFunction.insertPiece(temp);
-			min = pieces[i].calculateEnd();
+		else if (pieces[i].calculateEnd() <= min) { 
+		/*if gradient < 0 , keep the piece */
+			if (pieces[i].getGradient() <= 0) {
+				temp = pieces[i];
+				newFunction.insertPiece(temp);
+				min = pieces[i].calculateEnd();
+				}
+			else { /* else grad < 0 so min = f(piece.start) */
+				temp = pieces[i];
+				temp.setGradient(0);
+				temp.setConstant(pieces[i].calculate(pieces[i].getStart()));	
+				newFunction.insertPiece(temp);		
+			}
 		}
 		else {
 			temp = pieces[i];
@@ -178,20 +193,32 @@ PiecewiseLinearFunction PiecewiseLinearFunction::min() const {
 			temp.setConstant(min);
 			newFunction.insertPiece(temp);
 			}
-		cout << min << endl;
+		//cout << min << endl;
 		}
 	return newFunction;
 }
 
 PiecewiseLinearFunction PiecewiseLinearFunction::offSet(int offSet) const { 
-	cout << "Offset" << endl;
+	//cout << "Offset" << endl;
 	PiecewiseLinearFunction newFunction = *this;
-	cout << newFunction << endl; 
+	//cout << newFunction << endl; 
 	for (int i = 0; i < pieces.size(); i++) {
 		newFunction.setStartPiece(i, pieces[i].getStart() + offSet);
 		newFunction.setEndPiece(i, pieces[i].getEnd() + offSet);
 		}
 	return newFunction;			
+}
+
+int PiecewiseLinearFunction::argMin() const {
+	int min = pieces[0].getMinimum();
+	int argMin = pieces[0].argMin();
+	for (int i = 0; i < pieces.size(); i++) {
+		if (pieces[i].getMinimum	() < min) {
+			min = pieces[i].getMinimum();
+			argMin = pieces[i].argMin();
+			}
+	}	
+	return argMin;
 }
 		
 
@@ -263,7 +290,7 @@ PenaltyFunction::PenaltyFunction(const CustomerTemplateForm& filledOutTemplateFo
 			}
 			Piece minusInfinity(-INFINITY,filledOutTemplateForm.getStart(),0,settings.get(0,3),settings.get(0,3));
 			PiecewiseLinearFunction::insertPiece(minusInfinity);
-			Piece newPiece(filledOutTemplateForm.getStart(), filledOutTemplateForm.getEnd(),gradient,emphasis, settings.get(0,3));
+			Piece newPiece(filledOutTemplateForm.getStart(), filledOutTemplateForm.getEnd(),gradient,emphasis /*- gradient*filledOutTemplateForm.getStart()*/, settings.get(0,3));
 			PiecewiseLinearFunction::insertPiece(newPiece);
 			Piece plusInfinity(filledOutTemplateForm.getEnd(),INFINITY,0,settings.get(0,3),settings.get(0,3));
 			PiecewiseLinearFunction::insertPiece(plusInfinity);
@@ -278,22 +305,76 @@ Tour::Tour() {
 	addCustomer(warehouse);
 }
 
+Tour::Tour(const CustomerList& customers) {
+	
+	/*Adds warehouse in first position 
+	Customer warehouse("WAREHOUSE",0,0,0,0);
+	addCustomer(warehouse);*/
+	
+	for (int i = 0; i < customers.getSize(); i++) {
+		addCustomer(customers.getCustomer(i));
+	}
+	//addCustomer(warehouse);	
+}
+
+void Tour::switchCustomers(int i, int j, int k) {
+	Customer temp ;
+	for (int s = 0; s < k ; s++) {
+		temp = getCustomer((i+s)%getSize());
+		setCustomer((i+s)%getSize(), getCustomer((j+s) % getSize()));
+		setCustomer((j+s) % getSize(), temp);
+		cout << "*" << endl;
+	}	
+}
+
 PiecewiseLinearFunction Tour::propagatedFunction(int h) const {
 
 	/* f0 definition */
-	cout << "fO def : " << endl;
+	//cout << "fO def : " << endl;
 	PiecewiseLinearFunction f0;
 	Piece minusInfinity(-INFINITY,0,0,INFINITY,0);
 	Piece plusInfinity(0,INFINITY,0,0,0);
 	f0.insertPiece(minusInfinity);
 	f0.insertPiece(plusInfinity);
-	cout << "End of fO def  " << f0 << endl;
+	//cout << "End of fO def  " << f0 << endl;
 	
 	if (h == 0) {
 		return f0; }
 	else {
 		return (propagatedFunction(h-1).offSet(/*tau*/ getCustomer(h-1).getServiceTime() + getCustomer(h-1).getTravelTime(getCustomer(h)) /*tau*/) + getCustomer(h).getPenalty()).min() ;
 		}
+}
+
+PiecewiseLinearFunction Tour::ibarakiFunction(int h) {
+	addWarehouse();
+	PiecewiseLinearFunction function;
+	function = propagatedFunction(h) ;
+	removeWarehouse();
+	return function;
+}
+
+void Tour::addWarehouse() {
+	const Customer warehouse("Warehouse",0,0,0,0);
+	addCustomerStart(warehouse);
+	addCustomer(warehouse);
+	}
+
+void Tour::removeWarehouse() {
+	if (getCustomer(0).getName() == "Warehouse") {
+		removeCustomerStart();
+		removeCustomerEnd();
+	}
+	else {
+		cout << "No WArehouse" << endl;
+		return;
+	}
+}
+
+
+		
+	
+TSP::TSP(const CustomerList& customers) : tour(customers) {
+
 }
 
 
