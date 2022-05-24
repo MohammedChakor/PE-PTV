@@ -3,6 +3,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include<algorithm>
 #include "Function.h"
 #include "MatriceCarree.h"
 using namespace std;
@@ -186,7 +187,6 @@ class Customer
 		float getTravelTime(const Customer& customer2) const ;
 		float travelTime(const Customer& customer1, const Customer& customer2) const;
 		
-		
 		void setName(const string& newName) { customerName = newName; }
 		void setX(float newX) { x_coord = newX; }
 		void setY(float newY) { y_coord = newY; }
@@ -198,7 +198,9 @@ class Customer
 		
 		friend ostream& operator<<(ostream& flux, const Customer& customer);
 		bool operator==(const Customer& customer2) const;
-		bool operator!=(const Customer& customer2) const;	 
+		bool operator!=(const Customer& customer2) const;
+		
+	 
 		
 	private :
 		string customerName;
@@ -211,6 +213,17 @@ class Customer
 		PenaltyFunction penaltyFunction;	/* generated using the customerTemplateForm */	
 };
 
+bool comparatorStart(const Customer& client1, const Customer& client2) {
+
+	return client1.getTemplate().getStart() < client2.getTemplate().getStart();
+	
+	}
+	
+bool comparatorEnd(const Customer& client1, const Customer& client2) {
+
+	return client1.getTemplate().getEnd() < client2.getTemplate().getEnd();
+	
+	}
 
 
 /* Customer list generated using the "customer.csv" file" */
@@ -228,6 +241,10 @@ class CustomerList {
 		void addCustomerStart( const Customer& newCust) { customerList.insert(customerList.begin(), newCust); }
 		void removeCustomerStart() { customerList.erase(customerList.begin()) ; }
 		void removeCustomerEnd() {customerList.pop_back() ; }
+		
+		
+		void sortStart() { sort(customerList.begin(), customerList.end(), &comparatorStart); }
+		void sortEnd() { sort(customerList.begin(), customerList.end(), &comparatorEnd); }
 		friend ostream& operator<<(ostream& flux, const CustomerList& customerList);
 		
 		
@@ -268,22 +285,27 @@ class Tour : public CustomerList {
 		void removeWarehouse();
 		PiecewiseLinearFunction propagatedFunction(int h) const; //défintion de tau(h) à revoir
 		PiecewiseLinearFunction ibarakiFunction(int h);
+		float evaluate(const PiecewiseLinearFunction ibarakiFunction) const;
+		int getSize() const { return CustomerList::getSize(); }
 	
 	private :
+		 
 
 };
 
 class TSP {
 
 	public :
-		TSP(const CustomerList& customers);
+		TSP(const Tour& tour1) { tour = tour1; } 
+		void runTSP();
+		Tour getBest() const { return tour; }
+		void display() const { cout << tour << endl; } 
 		
 	private :
 	
 		Tour tour;
 
 };
-
 
 
 

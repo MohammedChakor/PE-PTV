@@ -31,8 +31,22 @@ int main(){
 
 	cout <<"Tour test" << endl;
 	Tour tour3(test);
-	cout << tour3 << endl;
+	PiecewiseLinearFunction ibaraki = tour3.ibarakiFunction(tour3.getSize());
 
+
+	cout << "\n\n\n\n\n" << endl;
+	TSP testTSP(tour3);
+	testTSP.runTSP();
+	Tour best = testTSP.getBest();
+	cout << best << endl;
+	PiecewiseLinearFunction final0 = best.ibarakiFunction(best.getSize());
+	
+	cout << "Penalty before TSP: " << tour3.evaluate(ibaraki) << endl;
+	cout << "Penalty after TSP: " << best.evaluate(final0) << endl;
+	
+	
+
+	/*
 	PiecewiseLinearFunction fh3;
 	fh3 = tour3.ibarakiFunction(15);
 	cout << "Random sequence \n " << fh3 << endl;	
@@ -45,7 +59,7 @@ int main(){
     PiecewiseLinearFunction fh4;
 	fh4 = tour3.ibarakiFunction(15);
 	cout << "AfterSWitch \n " << fh4 << endl;	
-	cout << "Argmin " << fh4.argMin() << endl;
+	cout << "Argmin " << fh4.argMin() << endl;*/
 	
     return 0; 
     

@@ -318,26 +318,25 @@ Tour::Tour(const CustomerList& customers) {
 }
 
 void Tour::switchCustomers(int i, int j, int k) {
+	
 	Customer temp ;
 	for (int s = 0; s < k ; s++) {
 		temp = getCustomer((i+s)%getSize());
 		setCustomer((i+s)%getSize(), getCustomer((j+s) % getSize()));
 		setCustomer((j+s) % getSize(), temp);
-		cout << "*" << endl;
+		
 	}	
 }
 
 PiecewiseLinearFunction Tour::propagatedFunction(int h) const {
-
-	/* f0 definition */
-	//cout << "fO def : " << endl;
+	
+	//cout << *this <<endl;
 	PiecewiseLinearFunction f0;
 	Piece minusInfinity(-INFINITY,0,0,INFINITY,0);
 	Piece plusInfinity(0,INFINITY,0,0,0);
 	f0.insertPiece(minusInfinity);
 	f0.insertPiece(plusInfinity);
-	//cout << "End of fO def  " << f0 << endl;
-	
+		
 	if (h == 0) {
 		return f0; }
 	else {
@@ -346,7 +345,13 @@ PiecewiseLinearFunction Tour::propagatedFunction(int h) const {
 }
 
 PiecewiseLinearFunction Tour::ibarakiFunction(int h) {
+
+	
+	//cout << *this << endl;
 	addWarehouse();
+	//cout<< *this << endl;
+	//cout << getCustomer(h) << endl;
+	
 	PiecewiseLinearFunction function;
 	function = propagatedFunction(h) ;
 	removeWarehouse();
@@ -371,11 +376,59 @@ void Tour::removeWarehouse() {
 }
 
 
-		
+float Tour::evaluate(const PiecewiseLinearFunction ibarakiFunction) const {
 	
-TSP::TSP(const CustomerList& customers) : tour(customers) {
+	return ibarakiFunction.calculate(ibarakiFunction.argMin());
 
 }
+
+void TSP::runTSP() {
+	
+	cout << "TSP"<< endl;
+	Tour bestTour = tour;
+	Tour search;
+	PiecewiseLinearFunction ibaraki1;
+	PiecewiseLinearFunction ibaraki2;
+	int k = 0;
+	int tabu = 4;
+	int size = tour.getSize();
+	cout << size << endl;
+	int j = size - 1;
+	int i = 0;
+	while (j > 0) {	
+		while (k < size) {
+			i++;
+			tour = bestTour;
+			search = tour;
+
+			search.switchCustomers(tabu + k, tabu + k+j, 1);
+				
+			ibaraki1 = tour.ibarakiFunction(size);
+			ibaraki2 = search.ibarakiFunction(size);
+				
+			if (search.evaluate(ibaraki2) < tour.evaluate(ibaraki1)) {
+				bestTour = search;
+				k = 0;
+				}
+			else {
+				k += 1;
+				}
+		}
+		j--;
+	}
+
+	tour = bestTour;
+	cout << "Tabu: " << tabu << endl;
+	cout << "Done :" << i << endl;
+}
+		
+
+
+
+
+
+		
+
 
 
 
