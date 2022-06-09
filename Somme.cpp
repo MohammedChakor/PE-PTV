@@ -6,9 +6,12 @@
 #include <string.h>
 
 #include "MatriceCarree.h"
-//#include "Sommet.h"
+
 #include "Customer.h"
-#include "Function.h"
+#include "CustomerList.h"
+#include "Tour.h"
+#include "Tsp.h"
+
 using namespace std;
 
 //void pwlfTest();
@@ -38,28 +41,16 @@ int main(){
 	TSP testTSP(tour3);
 	testTSP.runTSP();
 	Tour best = testTSP.getBest();
-	cout << best << endl;
+	//cout << best << endl;
 	PiecewiseLinearFunction final0 = best.ibarakiFunction(best.getSize());
 	
 	cout << "Penalty before TSP: " << tour3.evaluate(ibaraki) << endl;
 	cout << "Penalty after TSP: " << best.evaluate(final0) << endl;
 	
+	cout << "Temps de parcours avant tsp : " << tour3.getTravelTime() << endl;
+	cout << "Temps de parcours après tsp : " << best.getTravelTime() << endl;
 	
 
-	/*
-	PiecewiseLinearFunction fh3;
-	fh3 = tour3.ibarakiFunction(15);
-	cout << "Random sequence \n " << fh3 << endl;	
-	cout << "Argmin " << fh3.argMin() << endl;
-	
-	tour3.switchCustomers(1,14,2);
-	cout << "Switch: "<< endl;
-	cout << tour3 << endl;
-    
-    PiecewiseLinearFunction fh4;
-	fh4 = tour3.ibarakiFunction(15);
-	cout << "AfterSWitch \n " << fh4 << endl;	
-	cout << "Argmin " << fh4.argMin() << endl;*/
 	
     return 0; 
     

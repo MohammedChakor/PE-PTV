@@ -89,7 +89,7 @@ MatriceCarree::MatriceCarree(int dim)
     for (int i = 0; i < dim; i++)
         vecteur[i].assign(dim, 0);
 }
-
+/*
 MatriceCarree::MatriceCarree(const vector<Sommet> sommits) {
 
 	dimension = sommits.size();
@@ -108,7 +108,7 @@ MatriceCarree::MatriceCarree(const vector<Sommet> sommits) {
     			}
     		}
     	}
-}
+}*/
 
 float MatriceCarree::get(int i, int j) const
 {
