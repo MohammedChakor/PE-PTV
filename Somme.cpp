@@ -1,12 +1,12 @@
 // Somme.cpp
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 #include <string.h>
-
 #include "MatriceCarree.h"
-
 #include "Customer.h"
 #include "CustomerList.h"
 #include "Tour.h"
@@ -14,101 +14,69 @@
 
 using namespace std;
 
-//void pwlfTest();
-void sumTest();
 
+int main(int argc, char *argv[]){
 
-int main(){
+	cout << "Settings file: " << argv[1] << "\n" << endl;
 	
-	cout << "Hello ! \n";	
 	
-	string customers = "customersTest.txt";
-	string preferences = "preferencesTest.txt";
-	string settingsFile = "settings.txt";
-	//CustomerGenerator generator(customers,preferences,15);
+	
+	string settingsFile = argv[1];
 	SettingsGenerator settings(settingsFile);
 	
-	CustomerList test(customers);
-	test.initTemplates(preferences);
-	test.initPenalties(settings);	
-
-	cout <<"Tour test" << endl;
-	Tour tour3(test);
-	PiecewiseLinearFunction ibaraki = tour3.ibarakiFunction(tour3.getSize());
-
-
-	cout << "\n\n\n\n\n" << endl;
-	TSP testTSP(tour3);
-	testTSP.runTSP();
-	Tour best = testTSP.getBest();
-	//cout << best << endl;
-	PiecewiseLinearFunction final0 = best.ibarakiFunction(best.getSize());
+	string customerFile = "CustomerFile" ;
+	string preferenceFile = "PreferenceFile" ;
+	string txt = ".txt";
+	int numberOfCustomers = atoi(argv[2]);
+	int numberOfSequences = atoi(argv[3]);
 	
-	cout << "Penalty before TSP: " << tour3.evaluate(ibaraki) << endl;
-	cout << "Penalty after TSP: " << best.evaluate(final0) << endl;
+	string results = "results.txt";
+	fstream file_out(results);
 	
-	cout << "Temps de parcours avant tsp : " << tour3.getTravelTime() << endl;
-	cout << "Temps de parcours après tsp : " << best.getTravelTime() << endl;
+	srand (time(NULL));	
+		
+	for (int i = 0; i < numberOfSequences; i++) {
 	
-
+		string customerFileNumber = customerFile;
+		customerFileNumber.append(to_string(i));
+		customerFileNumber.append(txt);		
+		string preferenceFileNumber = preferenceFile;
+		preferenceFileNumber.append(to_string(i));
+		preferenceFileNumber.append(txt);
+		
+		CustomerGenerator customers(customerFileNumber, preferenceFileNumber, numberOfCustomers);
+		CustomerList customerList(customerFileNumber);
+		customerList.initTemplates(preferenceFileNumber);
+		customerList.initPenalties(settings);
+		
+		Tour sequence(customerList);
+		PiecewiseLinearFunction ibaraki_sequence = sequence.ibarakiFunction(sequence.getSize());
+		float inputTravelTime = sequence.getTravelTime();
+		float input_score = sequence.evaluate(ibaraki_sequence);
+		
+		TSP tsp(sequence);
+		tsp.runTSP();
+		Tour output = tsp.getBest();
+		PiecewiseLinearFunction ibaraki_output = output.ibarakiFunction(output.getSize());
+		float output_travelTime = output.getTravelTime();
+		float output_score = output.evaluate(ibaraki_output);
+		
+		//Ecriture résultats
+		
+		if(!file_out.is_open()) {
+			cout << "Failed to open results.txt" << endl;
+			}
+		else {
+			file_out << sequence.getSize() << "\t" << inputTravelTime << "\t" << input_score << "\t" << output_travelTime << "\t" << output_score << "\t" << settingsFile << endl; 
+			}	
+	}	
 	
-    return 0; 
+	file_out.close();	
+		
+    return EXIT_SUCCESS; 
     
     }
-    
-void sumTest() {
 
-	PiecewiseLinearFunction f0;
-	Piece p0(-INFINITY,3,-1,5, 1);
-	f0.insertPiece(p0);
-	Piece p1(3,6,-2,2,1);
-	Piece p4(6,INFINITY,1,1,1);
-	f0.insertPiece(p1);
-	f0.insertPiece(p4);
-	cout << f0 << endl;
-			
-	PiecewiseLinearFunction f1;
-	Piece p2(-INFINITY,4,1,1,1);
-	f1.insertPiece(p2);
-	Piece p3(4,8,-2,2,1);
-	Piece p5(8,INFINITY,1,1,1);
-	f1.insertPiece(p3);
-	f1.insertPiece(p5);
-	cout << f1 << endl;	
-	
-	PiecewiseLinearFunction f3;
-	f3 = f0 + f1;
-	cout << f3 << endl;
-	PiecewiseLinearFunction f4;
-	f4 = f3.min();
-	cout << f4 << endl;
-}
-
-	
-/*    
-void pwlfTest() {
-	
-	Piece P1(0,10,1,1,1);
-	Piece P2(3,7,1,1,1);
-	Piece P3(2,6,1,1,1);
-	Piece P4(5,12,1,1,1);
-	Piece P5(0,13,1,1,1);
-	Piece P6(14,16,1,1,1);
-	
-	PiecewiseLinearFunction pwlf;
-	pwlf.addPiece(P1);
-	pwlf.addPiece(P2);
-	pwlf.addPiece(P3);
-	pwlf.addPiece(P4);
-	pwlf.addPiece(P5);
-	pwlf.addPiece(P6);
-	cout << pwlf << endl;
-	
-	cout << "Min : \n" << pwlf.min() << endl;
-	
-	
-}*/
-    
 
  
 

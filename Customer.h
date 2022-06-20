@@ -69,7 +69,7 @@ class Customer
 class CustomerGenerator {
 
 	public :
-		CustomerGenerator(const string& customersFile, const string& preferencesFile, int numerOfCustomers);
+		CustomerGenerator(const string& customersFile, const string& preferencesFile, char numerOfCustomersC);
 	
 	private :
 		const vector<string> emphasis = {"very_much","much","rather"};

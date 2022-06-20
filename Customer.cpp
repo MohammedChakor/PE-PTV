@@ -82,14 +82,14 @@ void Customer::setPenaltyFunction(const SettingsGenerator& settings){
 
 /* CustomerGenerator */
 
-CustomerGenerator::CustomerGenerator(const string& customersFile, const string& preferencesFile, int numberOfCustomers) {
+CustomerGenerator::CustomerGenerator(const string& customersFile, const string& preferencesFile, char numberOfCustomersC) {
 
+	int number = (int) (numberOfCustomersC);
 	ofstream customers(customersFile);
 	ofstream preferences(preferencesFile);
-	srand (time(NULL));
 	int start;
 	int end;
-	for (int i = 1; i<= numberOfCustomers; i++) {
+	for (int i = 1; i<= number; i++) {
 		customers << i <<"\t"<< rand()%MAXDISTANCE /*x*/ << "\t" << rand()%MAXDISTANCE /*y*/ <<"\t"<< rand()%MAXSERVICE /*service*/<<endl;
 		start = rand()%WORKDAY;
 		end = rand()%WORKDAY;
