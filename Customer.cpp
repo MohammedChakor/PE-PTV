@@ -72,7 +72,7 @@ float travelTime(const Customer& customer1, const Customer& customer2) {
 }
 
 void Customer::setPenaltyFunction(const SettingsGenerator& settings){
-	cout <<"SetPenalty" << endl;	
+	//cout <<"SetPenalty" << endl;	
 	PenaltyFunction newFunction(customerTemplateForm, settings);
 	penaltyFunction = newFunction;
 }

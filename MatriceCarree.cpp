@@ -13,7 +13,7 @@ MatriceCarree::MatriceCarree()
 MatriceCarree::MatriceCarree(const string& ficMatrice)
 {
     ifstream flux(ficMatrice.c_str());
-    cout << "Constructeur via fichier texte \n" ;
+    //cout << "Constructeur via fichier texte \n" ;
     int getDim = 0;
     while (!flux.eof()) {
         string i;
@@ -26,7 +26,7 @@ MatriceCarree::MatriceCarree(const string& ficMatrice)
         if (getDim == 0) {   
             flux >> dim;
             dimension = stoi(dim); 
-            cout << "Dimension: " << dimension << "\n";
+            //cout << "Dimension: " << dimension << "\n";
             vecteur.resize(stoi(dim));
             
             for (int i = 0; i < dimension; i++){
@@ -51,7 +51,7 @@ MatriceCarree::MatriceCarree(const string& ficMatrice)
 MatriceCarree::MatriceCarree(const string& ficMatrice, const string& identifier)
 {
     ifstream flux(ficMatrice.c_str());
-    cout << "Constructeur via fichier texte n*n\n" ;
+    //cout << "Constructeur via fichier texte n*n\n" ;
     int getDim = 0;
     string temp0;    
     while (!flux.eof()) {
@@ -59,7 +59,7 @@ MatriceCarree::MatriceCarree(const string& ficMatrice, const string& identifier)
         if (getDim == 0) {   
             flux >> temp0;
             dimension = stoi(temp0); 
-            cout << "Dimension: " << dimension << "\n";
+            //cout << "Dimension: " << dimension << "\n";
             vecteur.resize(dimension);
             for (int i = 0; i < dimension; i++){
                 vecteur[i].assign(dimension, 0);

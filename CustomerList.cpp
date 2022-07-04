@@ -28,7 +28,7 @@ CustomerList::CustomerList(const string& customersFile) {
 
 void CustomerList::initTemplates(const string& templateFile) {
 
-	cout << "Init Templates\n";
+	//cout << "Init Templates\n";
 
 	ifstream flux(templateFile.c_str());
 	string customerNumber;
@@ -45,17 +45,17 @@ void CustomerList::initTemplates(const string& templateFile) {
 	//cout << "Flag 1\n";
 	while (!flux.eof()) {
 		flux >> customerNumber >> start >> end >> emphasis >> preference >> gradient ; /*use of intermediate strings to facilitate the understanding of the code, could have directly used temp[0] temp[1] etc */
-		cout << customerNumber << "\t"<< start <<"\t"<< end <<"\t"<< emphasis <<"\t"<< preference <<"\t"<< gradient << endl ;
+		//cout << customerNumber << "\t"<< start <<"\t"<< end <<"\t"<< emphasis <<"\t"<< preference <<"\t"<< gradient << endl ;
 		//cout << "Flag 2\n";
 		if (!flux.eof()) {
 			//cout << "Flag 3\n";
 			temp[0] = emphasis;
 			temp[1] = preference;
 			temp[2] = gradient;
-			cout << "Temp: " << temp[0] <<"\t"<< temp[1] <<"\t"<< temp[2] << endl;
+			//cout << "Temp: " << temp[0] <<"\t"<< temp[1] <<"\t"<< temp[2] << endl;
 			startint = stoi(start);
 			endint = stoi(end);			
-			cout << startint <<"\t"<< endint << endl;
+			//cout << startint <<"\t"<< endint << endl;
 			newTemplate.setVector(temp);
 			newTemplate.setStart(startint);
 			newTemplate.setEnd(endint);
