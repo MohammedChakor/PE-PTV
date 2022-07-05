@@ -32,6 +32,19 @@ void Tour::switchCustomers(int i, int j, int k) {
 	}	
 }
 
+void Tour::reverse(int start, int end)
+{
+	Customer temp ;
+	while (end - start > 0)
+	{
+		temp = getCustomer(start %getSize());
+		setCustomer(start %getSize(), getCustomer(end %getSize()));
+		setCustomer(end %getSize(), temp);
+		start++;
+		end--;
+	}
+}
+
 float Tour::getDistance() {
 
 	int size = getSize();
