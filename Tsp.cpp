@@ -16,9 +16,10 @@ void TSP::runTSP() {
 	int j = size - 1;
 	int i = 0;
 	
-	while (tabu < size) {
+
 		while (j > 0) {	
 			while (k < size) {
+				i++;
 				tour = bestTour;
 				search = tour;
 
@@ -28,11 +29,9 @@ void TSP::runTSP() {
 				ibaraki2 = search.ibarakiFunction(size);
 					
 				if (search.evaluate(ibaraki2) < tour.evaluate(ibaraki1)) {
-					i++;
 					bestTour = search;
 					k = 0;
 					j = size - 1
-					tabu = 0 ;
 					}
 				else {
 					k += 1;
@@ -40,8 +39,8 @@ void TSP::runTSP() {
 			}
 			j--;
 		}
-		tabu += 1;
-	}
+
+
 
 	tour = bestTour;
 	cout << "Tabu: " << tabu << endl;
