@@ -12,6 +12,7 @@ class Tour : public CustomerList {
 		Tour(const CustomerList& customers);
 		void switchCustomers(int i, int j, int k);
 		void reverse(int start, int end);
+
 		float getDistance();
 		float getTravelTime();
 				

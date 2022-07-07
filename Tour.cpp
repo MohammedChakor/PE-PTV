@@ -81,8 +81,10 @@ PiecewiseLinearFunction Tour::propagatedFunction(int h) const {
 	f0.insertPiece(plusInfinity);
 		
 	if (h == 0) {
+		//cout << "1*" << endl;
 		return f0; }
 	else {
+		//cout << "2*" << endl;
 		return (propagatedFunction(h-1).offSet(/*tau*/ getCustomer(h-1).getServiceTime() + getCustomer(h-1).getTravelTime(getCustomer(h)) /*tau*/) + getCustomer(h).getPenalty()).min() ;
 		}
 }

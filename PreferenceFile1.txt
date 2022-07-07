@@ -1,0 +1,15 @@
+1	21910	27953	much	like	later
+2	18076	26777	very_much	dislike	sooner
+3	2466	20698	very_much	like	sooner
+4	13902	14455	much	like	later
+5	5646	18469	rather	like	sooner
+6	25104	27595	much	dislike	later
+7	9476	18689	very_much	dislike	later
+8	15538	33314	rather	dislike	later
+9	10515	11382	very_much	like	sooner
+10	13414	15235	very_much	like	later
+11	29816	30083	very_much	dislike	later
+12	16498	26654	much	dislike	sooner
+13	31161	33289	very_much	like	later
+14	31270	35039	much	dislike	later
+15	5859	28814	rather	dislike	sooner
