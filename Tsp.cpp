@@ -11,7 +11,7 @@ void TSP::runTSP() {
 	PiecewiseLinearFunction ibaraki2;
 	int k = 0;
 	int tabu = 0;
-	int size = tour.getSize() - 1;
+	int size = tour.getSize();
 	cout << size << endl;
 	int j = size - 1;
 	int i = 0;
@@ -22,7 +22,7 @@ void TSP::runTSP() {
 			tour = bestTour;
 			search = tour;
 
-			search.switchCustomers(tabu + k, tabu + k + j, 1);
+			search.reverse(k, j);
 				
 			ibaraki1 = tour.ibarakiFunction(size);
 			ibaraki2 = search.ibarakiFunction(size);
@@ -34,6 +34,7 @@ void TSP::runTSP() {
 				}
 			else {
 				k += 1;
+				bestTour = tour;
 				}
 		}
 		j--;
